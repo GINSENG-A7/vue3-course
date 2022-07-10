@@ -5,7 +5,8 @@
 		<my-dialog v-model:show="dialogVisible">			
 			<post-form @create="createPost" style="margin-top: 30px"/>
 		</my-dialog>
-		<post-list :posts="posts" @remove="removePost" style="margin-top: 20px"/>
+		<post-list :posts="posts" @remove="removePost" v-if="!isPostsLoading" style="margin-top: 20px"/>
+		<div class="loading" v-else>Посты загружаются...</div>
 	</div>
 </template>
 
@@ -13,6 +14,8 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
 import MyButton from "./components/UI/MyButton.vue";
+import axious from "axios";
+import axios from 'axios';
 export default {
 	components: {
     PostList,
@@ -21,13 +24,9 @@ export default {
 },
 	data() {
 		return {
-			posts: [ 
-				{id: 1, title: "JavaScript", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eum exercitationem quo voluptas suscipit amet est mollitia laudantium, similique enim! Eos amet corporis architecto voluptate. Pariatur possimus fuga totam dolore."},
-				{id: 2, title: "JavaScript_2", body: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis fuga corrupti cum numquam dicta repellat nobis porro reiciendis officiis vel, harum tempora quidem neque ea iusto sapiente, temporibus doloremque nemo."},
-				{id: 3, title: "JavaScript_3", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis corrupti doloribus doloremque vitae voluptatibus consequuntur delectus autem qui nesciunt non nisi consectetur rerum laborum, nostrum natus, dolorum, magnam cupiditate quas?"} 
-			],
+			posts: [],
 			dialogVisible: false,
-			modificatorValue: ''
+			isPostsLoading: false,
 		}
 	},
 	methods: {
@@ -40,9 +39,22 @@ export default {
 		showDialog() {
 			this.dialogVisible = true;
 		},
-		async fetchUsers() {
-			
+		async fetchPosts() {
+			try {
+				this.isPostsLoading = true;
+				const response = await axios.get("https://jsonplaceholder.typicode.com/posts?_limit=10");
+				this.posts = response.data;
+			}
+			catch(e) {
+				alert("Ошибка сервера");
+			}
+			finally {
+				this.isPostsLoading = false;
+			}
 		}
+	},
+	mounted() {
+		this.fetchPosts();
 	}
 }
 </script>
@@ -52,6 +64,10 @@ export default {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	h1 {
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
 }
 .contaner {
 	margin: 0 auto;

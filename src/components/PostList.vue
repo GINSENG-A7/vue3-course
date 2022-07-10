@@ -25,7 +25,8 @@ export default {
 
 <style scoped lang="scss">
 	h3 {
-		margin-bottom: 15px;
+		padding-top: 15px;
+		padding-bottom: 15px;
 	}
 	.emptyAlert {
 		color: darkslateblue;
