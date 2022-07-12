@@ -1,7 +1,10 @@
 <template>
-	<div class="app contaner">
+	<div class="app container">
 		<h1>Страница с постами</h1>
-		<my-button @click="showDialog">Создать пользователя</my-button>
+		<div class="container__btns">
+			<my-button @click="showDialog">Создать пользователя</my-button>
+			<my-select v-model="selectedSort" :options="sortOptions"/>
+		</div>
 		<my-dialog v-model:show="dialogVisible">			
 			<post-form @create="createPost" style="margin-top: 30px"/>
 		</my-dialog>
@@ -14,19 +17,25 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
 import MyButton from "./components/UI/MyButton.vue";
-import axious from "axios";
 import axios from 'axios';
+import MySelect from './components/UI/MySelect.vue';
 export default {
 	components: {
     PostList,
     PostForm,
-    MyButton
+    MyButton,
+    MySelect
 },
 	data() {
 		return {
 			posts: [],
 			dialogVisible: false,
 			isPostsLoading: false,
+			selectedSort: "",
+			sortOptions: [
+				{value: "title", name: "По названию"},
+				{value: "body", name: "По содержимому"},
+			],
 		}
 	},
 	methods: {
@@ -55,7 +64,17 @@ export default {
 	},
 	mounted() {
 		this.fetchPosts();
-	}
+	},
+	watch: {
+		selectedSort(newValue) {
+			this.posts.sort((postA, postB) => {
+				return postA[newValue]?.localeCompare(postB[newValue]);
+			});
+		},
+	},
+	// computed() {
+
+	// }
 }
 </script>
 
@@ -69,8 +88,12 @@ export default {
 		padding-bottom: 20px;
 	}
 }
-.contaner {
+.container {
 	margin: 0 auto;
 	width: 95%;
+	&__btns {
+		display: flex;
+		justify-content: space-between;
+	}
 }
 </style>
