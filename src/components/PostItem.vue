@@ -22,7 +22,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 	.post {
 		padding: 15px;
 		border: 2px solid teal;
@@ -30,5 +30,6 @@ export default {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		background-color:gainsboro;
 	}
 </style>

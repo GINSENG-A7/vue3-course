@@ -1,7 +1,9 @@
 <template>
 	<div v-show="posts.length > 0">
 		<h3>Список пользователей</h3>
-		<post-item class="post" v-for="post in posts" :post="post" :key="post.id" @remove="$emit('remove', post)"/>
+		<transition-group name="post-list">
+			<post-item class="post" v-for="post in posts" :post="post" :key="post.id" @remove="$emit('remove', post)"/>
+		</transition-group>
 	</div>
 	<h2 v-show="posts.length == 0" class="emptyAlert">
 		Список пользователей пуст
@@ -32,4 +34,25 @@ export default {
 		color: darkslateblue;
 		text-align: center;
 	}
+	.post-list {
+		&-item {
+			display: inline-block;
+			// margin-right: 10px;
+		}
+		&-enter-active, &-leave-active {
+			transition: all 0.4s ease;
+		}
+		&-enter-from{
+			opacity: 0;
+			transform: translateX(-130px);
+		} 
+		&-leave-to {
+			opacity: 0;
+			transform: translateX(130px);
+		}
+		&-move {
+			transition: transform 0.4s ease;
+		}
+	}
+
 </style>

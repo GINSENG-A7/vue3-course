@@ -1,6 +1,7 @@
 <template>
 	<div class="app container">
 		<h1>Страница с постами</h1>
+		<my-input placeholder="Поиск..." v-model="searchQuery"></my-input>
 		<div class="container__btns">
 			<my-button @click="showDialog">Создать пользователя</my-button>
 			<my-select v-model="selectedSort" :options="sortOptions"/>
@@ -8,7 +9,7 @@
 		<my-dialog v-model:show="dialogVisible">			
 			<post-form @create="createPost" style="margin-top: 30px"/>
 		</my-dialog>
-		<post-list :posts="posts" @remove="removePost" v-if="!isPostsLoading" style="margin-top: 20px"/>
+		<post-list :posts="sortedAndSearchedPosts" @remove="removePost" v-if="!isPostsLoading" style="margin-top: 20px"/>
 		<div class="loading" v-else>Посты загружаются...</div>
 	</div>
 </template>
@@ -16,15 +17,13 @@
 <script>
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
-import MyButton from "./components/UI/MyButton.vue";
 import axios from 'axios';
-import MySelect from './components/UI/MySelect.vue';
+import MyInput from "./components/UI/MyInput.vue";
 export default {
 	components: {
     PostList,
     PostForm,
-    MyButton,
-    MySelect
+    MyInput
 },
 	data() {
 		return {
@@ -32,6 +31,7 @@ export default {
 			dialogVisible: false,
 			isPostsLoading: false,
 			selectedSort: "",
+			searchQuery: "",
 			sortOptions: [
 				{value: "title", name: "По названию"},
 				{value: "body", name: "По содержимому"},
@@ -65,16 +65,25 @@ export default {
 	mounted() {
 		this.fetchPosts();
 	},
-	watch: {
-		selectedSort(newValue) {
-			this.posts.sort((postA, postB) => {
-				return postA[newValue]?.localeCompare(postB[newValue]);
+	// watch: {
+	// 	selectedSort(newValue) {
+	// 		this.posts.sort((postA, postB) => {
+	// 			return postA[newValue]?.localeCompare(postB[newValue]);
+	// 		});
+	// 	},
+	// },
+	computed: {
+		sortedPosts() {
+			return [...this.posts].sort((postA, postB) => {
+				return postA[this.selectedSort]?.localeCompare(postB[this.selectedSort]);
 			});
 		},
+		sortedAndSearchedPosts() {
+			return this.sortedPosts.filter(({title, body}) => {
+				return (title + " " + body).toLowerCase().includes(this.searchQuery.toLowerCase());
+			});
+		}
 	},
-	// computed() {
-
-	// }
 }
 </script>
 
