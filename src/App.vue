@@ -11,9 +11,10 @@
 		</my-dialog>
 		<post-list :posts="sortedAndSearchedPosts" @remove="removePost" v-if="!isPostsLoading" style="margin-top: 20px"/>
 		<div class="loading" v-else>Посты загружаются...</div>
-		<div class="page__wrapper">
+		<!-- <div class="page__wrapper">
 			<div class="page" :class="{'current-page': page == pageNumber}" v-for="pageNumber in totalPages" :key="pageNumber" @click="changePage(pageNumber)">{{ pageNumber }}</div>
-		</div>
+		</div> -->
+		<div ref="observer" class="observer"></div>
 	</div>
 </template>
 
@@ -38,6 +39,7 @@ export default {
 			page: 1,
 			limit: 10,
 			totalPages: 0,
+			lastLoadedCount: 0,
 			sortOptions: [
 				{value: "title", name: "По названию"},
 				{value: "body", name: "По содержимому"},
@@ -54,20 +56,21 @@ export default {
 		showDialog() {
 			this.dialogVisible = true;
 		},
-		changePage(pageNumber) {
-			this.page = pageNumber;
-			this.fetchPosts();
-		},
+		// changePage(pageNumber) {
+		// 	this.page = pageNumber;
+		// },
 		async fetchPosts() {
 			try {
 				this.isPostsLoading = true;
 				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
-					_page: this.page,
-					_limit: this.limit,
+					params: {
+						_page: this.page,
+						_limit: this.limit,
+					} 
 				});
-				console.log(response.data.length);
 				this.totalPages = Math.ceil(response.data.length / this.limit);
 				this.posts = response.data;
+				this.lastLoadedCount = response.data.length;
 			}
 			catch(e) {
 				alert("Ошибка сервера");
@@ -75,17 +78,54 @@ export default {
 			finally {
 				this.isPostsLoading = false;
 			}
+		},
+		async loadMorePosts() {
+			try {
+				this.page += 1;
+				// this.isPostsLoading = true;
+				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
+					params: {
+						_page: this.page,
+						_limit: this.limit,
+					} 
+				});
+				this.totalPages = Math.ceil(response.data.length / this.limit);
+				this.posts = [...this.posts, ...response.data];
+				this.lastLoadedCount = response.data.length;
+			}
+			catch(e) {
+				alert("Ошибка сервера");
+			}
 		}
 	},
 	mounted() {
 		this.fetchPosts();
+		const options = {
+			rootMargin: "0px",
+			threshold: 1.0,
+		};
+		const callback = (entries, observer) => {
+			console.log(this.lastLoadedCount);
+			if (entries[0].isIntersecting && this.lastLoadedCount === this.limit) {
+				this.loadMorePosts();
+			}
+		};
+		const observer = new IntersectionObserver(callback, options);
+		observer.observe(this.$refs.observer);
 	},
+
 	// watch: {
 	// 	selectedSort(newValue) {
 	// 		this.posts.sort((postA, postB) => {
 	// 			return postA[newValue]?.localeCompare(postB[newValue]);
 	// 		});
 	// 	},
+	// },
+
+	// watch: {
+	// 	page() {
+	// 		this.fetchPosts();
+	// 	}
 	// },
 	computed: {
 		sortedPosts() {
@@ -132,6 +172,10 @@ export default {
 			background-color: #FFF;
 			border: 2px solid teal;
 		}
+	}
+	.observer {
+		height: 30px;
+		background-color: greenyellow;
 	}
 }
 </style>
