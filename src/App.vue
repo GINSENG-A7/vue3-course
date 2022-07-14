@@ -11,6 +11,9 @@
 		</my-dialog>
 		<post-list :posts="sortedAndSearchedPosts" @remove="removePost" v-if="!isPostsLoading" style="margin-top: 20px"/>
 		<div class="loading" v-else>Посты загружаются...</div>
+		<div class="page__wrapper">
+			<div class="page" :class="{'current-page': page == pageNumber}" v-for="pageNumber in totalPages" :key="pageNumber" @click="changePage(pageNumber)">{{ pageNumber }}</div>
+		</div>
 	</div>
 </template>
 
@@ -32,6 +35,9 @@ export default {
 			isPostsLoading: false,
 			selectedSort: "",
 			searchQuery: "",
+			page: 1,
+			limit: 10,
+			totalPages: 0,
 			sortOptions: [
 				{value: "title", name: "По названию"},
 				{value: "body", name: "По содержимому"},
@@ -48,10 +54,19 @@ export default {
 		showDialog() {
 			this.dialogVisible = true;
 		},
+		changePage(pageNumber) {
+			this.page = pageNumber;
+			this.fetchPosts();
+		},
 		async fetchPosts() {
 			try {
 				this.isPostsLoading = true;
-				const response = await axios.get("https://jsonplaceholder.typicode.com/posts?_limit=10");
+				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
+					_page: this.page,
+					_limit: this.limit,
+				});
+				console.log(response.data.length);
+				this.totalPages = Math.ceil(response.data.length / this.limit);
 				this.posts = response.data;
 			}
 			catch(e) {
@@ -103,6 +118,20 @@ export default {
 	&__btns {
 		display: flex;
 		justify-content: space-between;
+	}
+	.page__wrapper {
+		display: flex;
+		margin-top: 15px;
+		margin-bottom: 10px;
+		.page {
+			border: 2px solid black;
+			padding: 6px;
+			background-color:gainsboro;
+		}
+		.current-page {
+			background-color: #FFF;
+			border: 2px solid teal;
+		}
 	}
 }
 </style>
