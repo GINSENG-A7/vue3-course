@@ -14,7 +14,9 @@
 		<!-- <div class="page__wrapper">
 			<div class="page" :class="{'current-page': page == pageNumber}" v-for="pageNumber in totalPages" :key="pageNumber" @click="changePage(pageNumber)">{{ pageNumber }}</div>
 		</div> -->
-		<div ref="observer" class="observer"></div>
+
+		<!-- <div ref="observer" class="observer"></div> -->
+		<div v-intersection="[loadMorePosts, this]" class="observer"></div>
 	</div>
 </template>
 
@@ -22,13 +24,12 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
 import axios from 'axios';
-import MyInput from "@/components/UI/MyInput.vue";
+import { TypedChainedSet } from "webpack-chain";
 export default {
 	components: {
-    PostList,
-    PostForm,
-    MyInput
-},
+		PostList,
+		PostForm,
+	},
 	data() {
 		return {
 			posts: [],
@@ -96,22 +97,13 @@ export default {
 			catch(e) {
 				alert("Ошибка сервера");
 			}
+			// finally {
+			// 	this.isPostsLoading = false;
+			// }
 		}
 	},
 	mounted() {
 		this.fetchPosts();
-		const options = {
-			rootMargin: "0px",
-			threshold: 1.0,
-		};
-		const callback = (entries, observer) => {
-			console.log(this.lastLoadedCount);
-			if (entries[0].isIntersecting && this.lastLoadedCount === this.limit) {
-				this.loadMorePosts();
-			}
-		};
-		const observer = new IntersectionObserver(callback, options);
-		observer.observe(this.$refs.observer);
 	},
 
 	// watch: {

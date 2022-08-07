@@ -3,7 +3,9 @@
 		<div class="navbar__logo" @click="this.$router.push({ path: '/' })">Vue 3</div>
 		<div class="navbar__btns">
 			<my-button @click="this.$router.push('/posts')">Посты</my-button>
-			<my-button @click="this.$router.push('/about')">О сайте</my-button>
+			<my-button style="margin-left: 20px" @click="this.$router.push('/about')">О сайте</my-button>
+			<my-button style="margin-left: 20px" @click="this.$router.push('/store')">Store</my-button>
+			<my-button style="margin-left: 20px" @click="this.$router.push('/composition')">Composition</my-button>
 		</div>
 	</div>
 </template>

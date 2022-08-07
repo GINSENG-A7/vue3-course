@@ -6,8 +6,8 @@
 			<div><strong>Описание:</strong> {{post.body}} </div>
 		</div>
 		<div class="post__btns">
-			<my-button @click="$router.push(`/posts/${post.id}`)">Открыть</my-button>
-			<my-button @click="$emit('remove', post)">Удалить</my-button>
+			<my-button class="btn" @click="$router.push(`/posts/${post.id}`)">Открыть</my-button>
+			<my-button class="btn" @click="$emit('remove', post)">Удалить</my-button>
 		</div>
 	</div>
 	
@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	.post {
 		padding: 15px;
 		border: 2px solid teal;
@@ -33,5 +33,14 @@ export default {
 		align-items: center;
 		justify-content: space-between;
 		background-color:gainsboro;
+		&__btns {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.btn {
+				width: 100%;
+			}	
+		}
 	}
 </style>
