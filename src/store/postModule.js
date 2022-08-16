@@ -25,7 +25,7 @@ export const postModule = {
 			return getters.sortedPosts.filter(({title, body}) => {
 				return (title + " " + body).toLowerCase().includes(state.searchQuery.toLowerCase());
 			});
-		}
+		},
 	},
 	mutations: {
 		setPosts(state, posts) {
@@ -56,7 +56,6 @@ export const postModule = {
 		async fetchPosts({state, commit}) {
 			try {
 				commit("setLoading", true);
-				console.log(state.limit);
 				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
 					params: {
 						_page: state.page,
@@ -66,6 +65,8 @@ export const postModule = {
 				commit("setTotalPages", Math.ceil(response.data.length / state.limit));
 				commit("setPosts", response.data);
 				commit("setLastLoadedCount", response.data.length);
+				console.log(state.limit);
+				console.log(state.lastLoadedCount);
 			}
 			catch(e) {
 				alert("Ошибка сервера");
@@ -76,7 +77,6 @@ export const postModule = {
 		},
 		async loadMorePosts() {
 			try {
-				console.log(lastLoadedCount);
 				commit("setPage", state.page + 1);
 				// this.isPostsLoading = true;
 				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {

@@ -16,16 +16,18 @@
 		</div> -->
 
 		<!-- <div ref="observer" class="observer"></div> -->
-		<div v-intersection="[loadMorePosts, this]" class="observer"></div>
+		<div v-intersection="[loadMorePosts, lastLoadedCount, limit]" class="observer"></div>
 	</div>
 </template>
 
 <script>
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
-import { usePosts } from "@/hooks/usePosts"
-import { useSortedPosts } from "@/hooks/useSortedPosts"
-import { useSortedAndSearchedPosts } from "@/hooks/useSortedAndSearchedPosts"
+import { ref } from "vue";
+import { usePosts } from "@/hooks/usePosts";
+import useSortedPosts from "@/hooks/useSortedPosts";
+import useSortedAndSearchedPosts from "@/hooks/useSortedAndSearchedPosts";
+
 export default {
 	components: {
 		PostList,
@@ -38,17 +40,19 @@ export default {
 				{value: "title", name: "По названию"},
 				{value: "body", name: "По содержимому"},
 			],
-			// lastLoadedCount: 0,
 		}
 	},
-	setup(props) {
-		const {posts, isPostsLoading, totalPages} = usePosts(10);
+	setup(props, context) {
+		const limit = ref(10);
+		const {posts, isPostsLoading, totalPages, lastLoadedCount} = usePosts(limit);
 		const {sortedPosts, selectedSort} = useSortedPosts(posts);
 		const {sortedAndSearchedPosts, searchQuery} = useSortedAndSearchedPosts(sortedPosts)
 		return {
+			limit,
 			posts,
 			totalPages,
 			isPostsLoading,
+			lastLoadedCount,
 			sortedPosts,
 			selectedSort,
 			searchQuery,
