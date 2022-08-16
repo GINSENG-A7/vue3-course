@@ -38,10 +38,11 @@ export default {
 				{value: "title", name: "По названию"},
 				{value: "body", name: "По содержимому"},
 			],
+			// lastLoadedCount: 0,
 		}
 	},
 	setup(props) {
-		const {posts, totalPages, isPostsLoading} = usePosts(10);
+		const {posts, isPostsLoading, totalPages} = usePosts(10);
 		const {sortedPosts, selectedSort} = useSortedPosts(posts);
 		const {sortedAndSearchedPosts, searchQuery} = useSortedAndSearchedPosts(sortedPosts)
 		return {

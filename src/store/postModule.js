@@ -1,7 +1,8 @@
+import axios from 'axios';
+
 export const postModule = {
 	state: () => ({
 		posts: [],
-		dialogVisible: false,
 		isPostsLoading: false,
 		selectedSort: "",
 		searchQuery: "",
@@ -55,6 +56,7 @@ export const postModule = {
 		async fetchPosts({state, commit}) {
 			try {
 				commit("setLoading", true);
+				console.log(state.limit);
 				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
 					params: {
 						_page: state.page,
@@ -69,11 +71,12 @@ export const postModule = {
 				alert("Ошибка сервера");
 			}
 			finally {
-				commit("setLoading", true);
+				commit("setLoading", false);
 			}
 		},
 		async loadMorePosts() {
 			try {
+				console.log(lastLoadedCount);
 				commit("setPage", state.page + 1);
 				// this.isPostsLoading = true;
 				const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
@@ -87,6 +90,7 @@ export const postModule = {
 				commit("setLastLoadedCount", response.data.length);
 			}
 			catch(e) {
+				console.log(e);
 				alert("Ошибка сервера");
 			}
 		}

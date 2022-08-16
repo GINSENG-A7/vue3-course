@@ -5,11 +5,22 @@ export default {
 			threshold: 1.0,
 		};
 		const callback = (entries, observer) => {
-			console.log(binding);
-			console.log(binding.value[1].lastLoadedCount);
-			if (entries[0].isIntersecting && binding.value[1].lastLoadedCount === binding.value[1].limit) {
-				binding.value[0]();
+			console.log(binding.value);
+			if (binding.value.length === 2) {
+				console.log(binding.value[1].lastLoadedCount);
+				if (entries[0].isIntersecting && binding.value[1].lastLoadedCount === binding.value[1].limit) {
+					binding.value[0]();
+				}
 			}
+			else if (binding.value.length > 2) {
+				console.log(binding.value[1]);
+				console.log(binding.value[2]);
+				if (entries[0].isIntersecting && binding.value[1] === binding.value[2]) {
+					binding.value[0]();
+				}
+			}
+
+
 		};
 		const observer = new IntersectionObserver(callback, options);
 		observer.observe(el);

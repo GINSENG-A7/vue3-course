@@ -9,7 +9,7 @@ export default function useSortedPosts(sortedPosts) {
 	});
 
 	return {
+		sortedAndSearchedPosts,
 		searchQuery,
-		sortedAndSearchedPosts
 	}
 };

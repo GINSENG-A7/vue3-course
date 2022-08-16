@@ -16,7 +16,7 @@
 		</div> -->
 
 		<!-- <div ref="observer" class="observer"></div> -->
-		<div v-intersection="[loadMorePosts, this]" class="observer"></div>
+		<div v-intersection="[loadMorePosts, lastLoadedCount, limit]" class="observer"></div>
 	</div>
 </template>
 
