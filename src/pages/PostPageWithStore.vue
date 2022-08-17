@@ -16,7 +16,7 @@
 		</div> -->
 
 		<!-- <div ref="observer" class="observer"></div> -->
-		<div v-intersection="[loadMorePosts, lastLoadedCount, limit]" class="observer"></div>
+		<div v-intersection="[loadMorePosts, lastLoadedCount, limit]" :key="lastLoadedCount" class="observer"></div>
 	</div>
 </template>
 
@@ -58,65 +58,10 @@ export default {
 		showDialog() {
 			this.dialogVisible = true;
 		},
-		// changePage(pageNumber) {
-		// 	this.page = pageNumber;
-		// },
-		// async fetchPosts() {
-		// 	try {
-		// 		this.isPostsLoading = true;
-		// 		const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
-		// 			params: {
-		// 				_page: this.page,
-		// 				_limit: this.limit,
-		// 			} 
-		// 		});
-		// 		this.totalPages = Math.ceil(response.data.length / this.limit);
-		// 		this.posts = response.data;
-		// 		this.lastLoadedCount = response.data.length;
-		// 	}
-		// 	catch(e) {
-		// 		alert("Ошибка сервера");
-		// 	}
-		// 	finally {
-		// 		this.isPostsLoading = false;
-		// 	}
-		// },
-		// async loadMorePosts() {
-		// 	try {
-		// 		this.page += 1;
-		// 		// this.isPostsLoading = true;
-		// 		const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
-		// 			params: {
-		// 				_page: this.page,
-		// 				_limit: this.limit,
-		// 			} 
-		// 		});
-		// 		this.totalPages = Math.ceil(response.data.length / this.limit);
-		// 		this.posts = [...this.posts, ...response.data];
-		// 		this.lastLoadedCount = response.data.length;
-		// 	}
-		// 	catch(e) {
-		// 		alert("Ошибка сервера");
-		// 	}
-		// }
 	},
 	mounted() {
 		this.fetchPosts();
 	},
-
-	// watch: {
-	// 	selectedSort(newValue) {
-	// 		this.posts.sort((postA, postB) => {
-	// 			return postA[newValue]?.localeCompare(postB[newValue]);
-	// 		});
-	// 	},
-	// },
-
-	// watch: {
-	// 	page() {
-	// 		this.fetchPosts();
-	// 	}
-	// },
 	computed: {
 		...mapState({
 			posts: state => state.post.posts,

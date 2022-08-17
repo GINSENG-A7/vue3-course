@@ -1,7 +1,7 @@
 import axios from "axios";
 import {onMounted, ref} from "vue";
 
-export function usePosts(limit) {
+export function usePosts(limit, page) {
 	const posts = ref([]);
 	const totalPages = ref(0);
 	const isPostsLoading = ref(true);
@@ -11,14 +11,13 @@ export function usePosts(limit) {
 			isPostsLoading.value = true;
 			const response = await axios.get("https://jsonplaceholder.typicode.com/posts", {
 				params: {
-					_page: 1,
-					_limit: limit,
+					_page: page.value,
+					_limit: limit.value,
 				} 
 			});
 			totalPages.value = Math.ceil(response.data.length / limit);
 			posts.value = response.data;
 			lastLoadedCount.value = response.data.length;
-			console.log(lastLoadedCount);
 		}
 		catch(e) {
 			console.log(e);
