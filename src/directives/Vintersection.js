@@ -23,18 +23,11 @@ export default {
 					binding.value[0]();
 				}
 			}
-			//test case
+			//composition API case
 			else if (binding.value.length < 2) {
 				console.log(binding.value[0]);
-				if (entries[0].isIntersecting && binding.value[1] === binding.value[2]) {
-					binding.value[0].getMorePosts(
-						this.limit.value, 
-						this.page.value,
-						this.sortedAndSearchedPosts.value,
-						this.totalPages.value,
-						this.isPostsLoading.value,
-						this.lastLoadedCount.value,
-					);
+				if (entries[0].isIntersecting && binding.value[0].lastLoadedCount === binding.value[0].limit) {
+					binding.value[0].getMorePosts();
 				}
 			}
 
